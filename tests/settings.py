@@ -5,6 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'fake-key'
 
 INSTALLED_APPS = [
+    'django.contrib.contenttypes',
     'tests',
 ]
 

@@ -3,8 +3,10 @@ __all__ = ['Loader', 'NullLoader']
 
 class Loader:
     model = None
-    source = None
     serializer_class = None
+
+    def __init__(self, source=None):
+        self.source = source
 
     def load(self):
         if not self.source or not self.serializer_class:
