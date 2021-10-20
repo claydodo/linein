@@ -1,3 +1,5 @@
+__all__ = ['User', 'Tag', 'Product', 'Order']
+
 from django.db import models
 
 
@@ -12,6 +14,16 @@ class User(models.Model):
         return self.username
 
 
+class Tag(models.Model):
+    class Meta:
+        pass
+
+    name = models.CharField(max_length=16, primary_key=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
     class Meta:
         pass
@@ -19,6 +31,7 @@ class Product(models.Model):
     id = models.CharField(max_length=16, primary_key=True)
     name = models.CharField(max_length=16, default='', null=True, blank=True)
     desc = models.TextField(default='', null=True, blank=True)
+    tags = models.ManyToManyField(Tag, related_name='products', blank=True)
     on_shelf = models.BooleanField(default=True)
 
     def __str__(self):

@@ -1,7 +1,7 @@
 __all__ = ['RegistryManager', 'register']
 
 from django.contrib.contenttypes.models import ContentType
-from django.db.models.fields.related import ForeignObject
+from django.db.models.fields.related import RelatedField
 from .loader import NullLoader
 
 
@@ -48,7 +48,7 @@ def load_data(model, category=RegistryManager.DEFAULT_CATEGORY, with_deps=False)
     loader = RegistryManager().get_loader(model, category=category)
     if with_deps and loader.model is not None:
         for field in loader.model._meta.get_fields(include_hidden=True):
-            if isinstance(field, ForeignObject):
+            if isinstance(field, RelatedField):
                 dep_model = field.related_model
                 load_data(dep_model, category=category, with_deps=True)
 

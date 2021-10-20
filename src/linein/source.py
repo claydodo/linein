@@ -4,6 +4,7 @@ __all__ = [
     'FolderSourceBase',
     'FileTypeFolderSourceBase',
     'JSONFolderSource',
+    'MIXONFolderSource',
 ]
 
 import os

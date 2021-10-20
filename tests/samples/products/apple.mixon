@@ -1,0 +1,11 @@
+{
+    "id": "apple",
+    "name": "Apple",
+    "tags": ["food", "cheap"],
+    "on_shelf": true
+}
+#----: desc :----#
+Apple round,
+apple red,
+apple juicy,
+apple sweet.
