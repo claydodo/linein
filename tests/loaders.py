@@ -1,4 +1,4 @@
-from src.linein.loader import Loader
+from src.linein.loader import Loader, M2MFieldWithThrough
 from tests.models import *
 from tests.serializers import *
 
@@ -20,4 +20,12 @@ class ProductLoader(Loader):
 
 class OrderLoader(Loader):
     model = Order
-    serializer_class = OrderSerializer
+    serializer_class = OrderSerializerWithSave
+
+
+class AltOrderLoader(Loader):
+    model = Order
+    serializer_class = OrderSerializerWithoutSave
+    m2m_fields_with_through = [
+        M2MFieldWithThrough(name='product_entries', serializer_class=OrderProductEntrySerializer, host_id_key='order')
+    ]

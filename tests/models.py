@@ -1,4 +1,4 @@
-__all__ = ['User', 'Tag', 'Product', 'Order']
+__all__ = ['User', 'Tag', 'Product', 'OrderProductEntry', 'Order']
 
 from django.db import models
 
@@ -38,12 +38,25 @@ class Product(models.Model):
         return self.name
 
 
+class OrderProductEntry(models.Model):
+    class Meta:
+        pass
+
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='product_entries')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='order_entries')
+    count = models.IntegerField(default=1)
+
+    def __str__(self):
+        return "{}: {} x{}".format(self.order, self.product, self.count)
+
+
 class Order(models.Model):
     class Meta:
         pass
 
     id = models.CharField(max_length=32, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    products = models.ManyToManyField(Product, related_name='orders', through=OrderProductEntry, blank=True)
 
     def __str__(self):
         return self.id

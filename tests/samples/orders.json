@@ -1,10 +1,26 @@
 [
   {
     "id": "o001",
-    "user": "alice"
+    "user": "alice",
+    "product_entries": [
+      {
+        "product": "watch",
+        "count": 1
+      }
+    ]
   },
   {
     "id": "o002",
-    "user": "bob"
+    "user": "bob",
+    "product_entries": [
+      {
+        "product": "watch",
+        "count": 1
+      },
+      {
+        "product": "apple",
+        "count": 5
+      }
+    ]
   }
 ]

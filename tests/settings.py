@@ -15,3 +15,5 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'tests', 'db.sqlite3'),
     }
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

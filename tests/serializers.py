@@ -1,4 +1,4 @@
-__all__ = ['UserSerializer', 'TagSerializer', 'ProductSerializer', 'OrderSerializer']
+__all__ = ['UserSerializer', 'TagSerializer', 'ProductSerializer', 'OrderProductEntrySerializer', 'OrderSerializerWithSave', 'OrderSerializerWithoutSave']
 
 from rest_framework import serializers
 from .models import *
@@ -22,7 +22,42 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'desc', 'tags', 'on_shelf']
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class ProductEntrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderProductEntry
+        fields = ['product', 'count']
+
+
+class OrderProductEntrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderProductEntry
+        fields = ['order', 'product', 'count']
+
+
+class OrderSerializerWithSave(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = [
+            'id', 'user',
+            'product_entries'
+        ]
+
+    product_entries = ProductEntrySerializer(many=True)
+
+    def create(self, validated_data):
+        # This is way too complex
+        product_entries_data = validated_data.pop('product_entries', [])
+        order = Order.objects.create(**validated_data)
+        for entry_info in product_entries_data:
+            OrderProductEntry.objects.create(order=order, **entry_info)
+        return order
+
+    def update(self, instance, validated_data):
+        pass
+
+
+class OrderSerializerWithoutSave(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'user']
+
