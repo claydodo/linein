@@ -1,7 +1,7 @@
 from django.test import TestCase
-from linein.registry import RegistryManager, register
-from linein.source import *
-from linein.loader import NullLoader
+from src.linein.registry import RegistryManager, register
+from src.linein.loader import NullLoader
+from src.linein.source import *
 from tests.loaders import *
 
 

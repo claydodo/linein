@@ -1,5 +1,5 @@
 from django.test import TestCase
-from linein.loader import *
+from src.linein.loader import *
 
 
 class TestBuiltInLoaders(TestCase):

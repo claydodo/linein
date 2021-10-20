@@ -1,19 +1,36 @@
 __all__ = [
     'Source',
+    'JSONFileSource',
     'FolderSourceBase',
     'FileTypeFolderSourceBase',
     'JSONFolderSource',
-    'JSONFileSource',
 ]
 
 import os
 import json
 import glob
 
+try:
+    import mixon
+    HAS_MIXON = True
+except ImportError:
+    HAS_MIXON = False
+
 
 class Source:
     def __iter__(self):
         return
+
+
+class JSONFileSource(Source):
+    def __init__(self, file_path):
+        self.file_path = file_path
+
+    def __iter__(self):
+        with open(self.file_path) as f:
+            data = json.load(f, strict=False)
+            assert isinstance(data, list)
+            return iter(data)
 
 
 class FolderSourceBase(Source):
@@ -50,14 +67,12 @@ class JSONFolderSource(FileTypeFolderSourceBase):
             return json.load(f)
 
 
-class JSONFileSource(Source):
-    def __init__(self, file_path):
-        self.file_path = file_path
+class MIXONFolderSource(FileTypeFolderSourceBase):
+    ext = 'mixon'
 
-    def __iter__(self):
-        with open(self.file_path) as f:
-            data = json.load(f, strict=False)
-            assert isinstance(data, list)
-            return iter(data)
+    def load_file(self, file_path):
+        if not HAS_MIXON:
+            raise RuntimeError("Requires mixon! (pip install mixon)")
 
-
+        with open(file_path) as f:
+            return mixon.load(f)

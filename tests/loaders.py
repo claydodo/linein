@@ -1,4 +1,4 @@
-from linein.loader import Loader
+from src.linein.loader import Loader
 from tests.models import *
 
 

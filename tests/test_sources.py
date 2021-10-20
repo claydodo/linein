@@ -1,5 +1,5 @@
 import unittest
-from linein.source import JSONFolderSource, JSONFileSource
+from src.linein.source import JSONFolderSource, JSONFileSource
 
 
 class TestSources(unittest.TestCase):
