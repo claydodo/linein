@@ -1,5 +1,5 @@
 from django.test import TestCase
-from src.linein.registry import register, load_data
+from src.linein.registry import register, load_data, load_all_data
 from src.linein.source import *
 from .models import *
 from .loaders import *
@@ -51,3 +51,11 @@ class TestLoaders(TestCase):
         self.assertEqual(order1.user.name, 'Alice')
         self.assertEqual(order1.products.count(), 1)
 
+    def test_load_all_data(self):
+        print("Loading All Data")
+        load_all_data(category=CATEGORY)
+        self.assertEqual(User.objects.count(), USER_COUNT)
+        self.assertEqual(Order.objects.count(), ORDER_COUNT)
+        self.assertEqual(Tag.objects.count(), TAG_COUNT)
+        self.assertEqual(Product.objects.count(), PRODUCT_COUNT)
+        print("End Loading")

@@ -1,4 +1,4 @@
-__all__ = ['RegistryManager', 'register']
+__all__ = ['RegistryManager', 'manager', 'register', 'load_data', 'load_all_data']
 
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.fields.related import RelatedField
@@ -38,18 +38,38 @@ class RegistryManager(Singleton):
     def clear(self):
         self._pool.clear()
 
+    def load_all_data(self, category=DEFAULT_CATEGORY):
+        memo = set()
+        for (model_path, cat), loader in self._pool.items():
+            if cat == category:
+                self._load_data(loader.model, category=category, with_deps=True, memo=memo)
 
-def register(loader_class, category=RegistryManager.DEFAULT_CATEGORY, source=None):
-    manager = RegistryManager()
-    manager.register(loader_class, category=category, source=source)
+    def load_data(self, model, category=DEFAULT_CATEGORY, with_deps=False):
+        self._load_data(model, category=category, with_deps=with_deps, memo=None)
+
+    def _load_data(self, model, category=DEFAULT_CATEGORY, with_deps=False, memo=None):
+        def _use_memo():
+            nonlocal memo
+            return isinstance(memo, set)
+
+        if _use_memo() and model in memo:
+            return
+        loader = self.get_loader(model, category=category)
+
+        if with_deps and loader.model is not None:
+            for field in loader.model._meta.get_fields(include_hidden=True):
+                if isinstance(field, RelatedField):
+                    dep_model = field.related_model
+                    self._load_data(dep_model, category=category, with_deps=True, memo=memo)
+
+        print("Loading {} data for {}".format(category, model))
+        loader.load()
+        if _use_memo():
+            memo.add(model)
 
 
-def load_data(model, category=RegistryManager.DEFAULT_CATEGORY, with_deps=False):
-    loader = RegistryManager().get_loader(model, category=category)
-    if with_deps and loader.model is not None:
-        for field in loader.model._meta.get_fields(include_hidden=True):
-            if isinstance(field, RelatedField):
-                dep_model = field.related_model
-                load_data(dep_model, category=category, with_deps=True)
+manager = RegistryManager()
 
-    loader.load()
+register = manager.register
+load_data = manager.load_data
+load_all_data = manager.load_all_data
