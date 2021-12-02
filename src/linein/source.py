@@ -1,5 +1,6 @@
 __all__ = [
     'Source',
+    'MultipleSource',
     'JSONFileSource',
     'FolderSourceBase',
     'FileTypeFolderSourceBase',
@@ -21,6 +22,16 @@ except ImportError:
 class Source:
     def __iter__(self):
         return
+
+
+class MultipleSource:
+    def __init__(self, sources):
+        self.sources = sources
+
+    def __iter__(self):
+        for source in self.sources:
+            if source:
+                yield from source
 
 
 class JSONFileSource(Source):

@@ -1,5 +1,5 @@
 import unittest
-from src.linein.source import JSONFolderSource, JSONFileSource
+from src.linein.source import JSONFolderSource, JSONFileSource, MultipleSource
 
 
 class TestSources(unittest.TestCase):
@@ -9,6 +9,13 @@ class TestSources(unittest.TestCase):
 
     def test_JSONFolderSource(self):
         source = JSONFolderSource('tests/samples/users_to_test_JSONFolderSource')
+        self._test_source(source)
+
+    def test_MultipleSource(self):
+        source = MultipleSource([
+            JSONFileSource('tests/samples/users_part1.json'),
+            JSONFolderSource('tests/samples/users_part2'),
+        ])
         self._test_source(source)
 
     def _test_source(self, source):
