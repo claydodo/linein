@@ -43,17 +43,21 @@ class Loader:
 
         for raw_data in self.source:
             data = self.parse(raw_data)
+            self.load_entry(data)
 
-            m2m_data = {}
-            if self.m2m_fields_with_through:
-                for field in self.m2m_fields_with_through:
-                    m2m_data[field.name] = data.pop(field.name, [])
+    def load_entry(self, data):
+        m2m_data = {}
+        if self.m2m_fields_with_through:
+            for field in self.m2m_fields_with_through:
+                m2m_data[field.name] = data.pop(field.name, [])
 
-            instance = data_to_instance(self.serializer_class, data)
+        instance = data_to_instance(self.serializer_class, data)
 
-            if self.m2m_fields_with_through:
-                for field in self.m2m_fields_with_through:
-                    field.load_list(m2m_data[field.name], host_id=instance.pk)
+        if self.m2m_fields_with_through:
+            for field in self.m2m_fields_with_through:
+                field.load_list(m2m_data[field.name], host_id=instance.pk)
+
+        return instance
 
     def parse(self, raw_data):
         return raw_data
