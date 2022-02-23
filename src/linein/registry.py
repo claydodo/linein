@@ -45,15 +45,15 @@ class RegistryManager(Singleton):
                 self._load_data(loader.model, category=category, with_deps=True, memo=memo)
 
     def load_data(self, model, category=DEFAULT_CATEGORY, with_deps=False):
-        self._load_data(model, category=category, with_deps=with_deps, memo=None)
+        self._load_data(model, category=category, with_deps=with_deps, memo=set())
 
     def _load_data(self, model, category=DEFAULT_CATEGORY, with_deps=False, memo=None):
-        def _use_memo():
-            nonlocal memo
-            return isinstance(memo, set)
+        if isinstance(memo, set):
+            if model in memo:
+                return
+            else:
+                memo.add(model)
 
-        if _use_memo() and model in memo:
-            return
         loader = self.get_loader(model, category=category)
 
         if with_deps and loader.model is not None:
@@ -64,8 +64,6 @@ class RegistryManager(Singleton):
 
         print("Loading {} data for {}".format(category, model))
         loader.load()
-        if _use_memo():
-            memo.add(model)
 
 
 manager = RegistryManager()

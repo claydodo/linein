@@ -29,3 +29,8 @@ class AltOrderLoader(Loader):
     m2m_fields_with_through = [
         M2MFieldWithThrough(name='product_entries', serializer_class=OrderProductEntrySerializer, host_id_key='order')
     ]
+
+
+class EntityLoader(Loader):
+    model = Entity
+    serializer_class = EntitySerializer

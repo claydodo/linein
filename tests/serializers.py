@@ -1,4 +1,7 @@
-__all__ = ['UserSerializer', 'TagSerializer', 'ProductSerializer', 'OrderProductEntrySerializer', 'OrderSerializerWithSave', 'OrderSerializerWithoutSave']
+__all__ = [
+    'UserSerializer', 'TagSerializer', 'ProductSerializer', 'OrderProductEntrySerializer', 'OrderSerializerWithSave', 'OrderSerializerWithoutSave',
+    'EntitySerializer',
+]
 
 from rest_framework import serializers
 from .models import *
@@ -61,3 +64,8 @@ class OrderSerializerWithoutSave(serializers.ModelSerializer):
         model = Order
         fields = ['id', 'user']
 
+
+class EntitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Entity
+        fields = ['id', 'subs']

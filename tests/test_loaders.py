@@ -1,5 +1,5 @@
 from django.test import TestCase
-from src.linein.registry import register, load_data, load_all_data
+from src.linein.registry import register, load_data, load_all_data, manager
 from src.linein.source import *
 from .models import *
 from .loaders import *
@@ -17,6 +17,9 @@ class TestLoaders(TestCase):
         register(TagLoader, category=CATEGORY, source=JSONFileSource('tests/samples/tags.json'))
         register(ProductLoader, category=CATEGORY, source=MIXONFolderSource('tests/samples/products'))
         register(OrderLoader, category=CATEGORY, source=JSONFileSource('tests/samples/orders.json'))
+
+    def tearDown(self):
+        manager.clear()
 
     def test_load_users(self):
         load_data(User, category=CATEGORY)
@@ -59,3 +62,10 @@ class TestLoaders(TestCase):
         self.assertEqual(Tag.objects.count(), TAG_COUNT)
         self.assertEqual(Product.objects.count(), PRODUCT_COUNT)
         print("End Loading")
+
+    # recursive deps
+    def test_load_recursive_entity(self):
+        register(EntityLoader, category=CATEGORY, source=JSONFileSource('tests/samples/entities.json'))
+        load_data(Entity, category=CATEGORY, with_deps=True)
+        p = Entity.objects.get(id='parent')
+        self.assertEqual(p.subs.count(), 2)
